@@ -4,25 +4,32 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
+import javax.transaction.Transactional;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users ")
 public class User implements UserDetails {
+    @Override
+    public String toString() {
+        return "User information:" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", age=" + age +
+                ", password='" + password + '\'' +
+                ", roles=" + roles;
+    }
+
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotEmpty(message = "имя не должно быть пустым")
     @Column(name = "username")
-    @Size (min = 2,max = 50,message = "Имя должно быть от 2-ух до 50-ти символов длинной")
     private String username;
-    @Min(value = 1922,message = "Год рождения должен быть больше чем 1922")
-    @Column(name = "year_of_birth")
-    private int yearOfBirth;
+
+    @Column(name = "age")
+    private int age;
     @Column(name = "password")
     private String password;
 
@@ -34,7 +41,7 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",
     joinColumns = @JoinColumn(name = "user_id"),
     inverseJoinColumns = @JoinColumn(name = "role_id"))
@@ -43,9 +50,9 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(String username, int yearOfBirth) {
+    public User(String username, int age) {
         this.username = username;
-        this.yearOfBirth = yearOfBirth;
+        this.age = age;
     }
 
     public Long getId() {
@@ -84,17 +91,18 @@ public class User implements UserDetails {
         this.username = username;
     }
 
-    public int getYearOfBirth() {
-        return yearOfBirth;
+    public int getAge() {
+        return age;
     }
 
-    public void setYearOfBirth(int yearOfBirth) {
-        this.yearOfBirth = yearOfBirth;
+    public void setAge(int yearOfBirth) {
+        this.age = yearOfBirth;
     }
 
     @Override
+    @Transactional
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return getRoles().stream().collect(Collectors.toSet());
     }
     @Override
     public String getPassword() {

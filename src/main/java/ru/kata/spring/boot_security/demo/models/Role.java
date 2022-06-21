@@ -12,13 +12,16 @@ public class Role implements GrantedAuthority {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @Column(name = "username")
+    @Column(name = "name")
     private String name;
 
     public Role(Long id, String name) {
         this.id = id;
         this.name = name;
     }
+    @ManyToMany(cascade = {CascadeType.REFRESH}
+            ,mappedBy = "roles")
+    private Collection<User> users;
 
     public Role() {
     }
