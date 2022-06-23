@@ -6,21 +6,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import javax.transaction.Transactional;
 import java.util.Collection;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity
-@Table(name = "users ")
+@Table(name = "users")
 public class User implements UserDetails {
-    @Override
-    public String toString() {
-        return "User information:" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", age=" + age +
-                ", password='" + password + '\'' +
-                ", roles=" + roles;
-    }
-
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,27 +24,23 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    public Collection<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Collection<Role> roles) {
-        this.roles = roles;
-    }
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",
-    joinColumns = @JoinColumn(name = "user_id"),
-    inverseJoinColumns = @JoinColumn(name = "role_id"))
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @Column(name = "roles")
     private Collection<Role> roles;
 
     public User() {
     }
-
-    public User(String username, int age) {
+    public User(String username, int age, String password, Collection<Role> roles) {
         this.username = username;
         this.age = age;
+        this.password = password;
+        this.roles = roles;
     }
+
 
     public Long getId() {
         return id;
@@ -65,6 +52,34 @@ public class User implements UserDetails {
     @Override
     public String getUsername() {
         return username;
+    }
+    public void setUsername(String username) {
+        this.username = username;
+    }
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int yearOfBirth) {
+        this.age = yearOfBirth;
+    }
+    @Override
+    public String getPassword() {
+        return password;
+    }
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    public Collection<Role> getRoles() {
+        return roles;
+    }
+    public void setRoles(Collection<Role> roles) {
+        this.roles = roles;
+    }
+    @Override
+    @Transactional
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return getRoles().stream().collect(Collectors.toSet());
     }
 
     @Override
@@ -87,29 +102,13 @@ public class User implements UserDetails {
         return true;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int yearOfBirth) {
-        this.age = yearOfBirth;
-    }
-
     @Override
-    @Transactional
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getRoles().stream().collect(Collectors.toSet());
-    }
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+    public String toString() {
+        return "User information:" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", age=" + age +
+                ", password='" + password + '\'' +
+                ", roles=" + roles;
     }
 }

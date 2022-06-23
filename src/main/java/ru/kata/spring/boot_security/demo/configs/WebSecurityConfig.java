@@ -14,20 +14,18 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.services.UserDetailServiceImpl;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    private UserDetailServiceImpl userDetailService;
-    @Autowired
-    public void setUserDetailService(UserDetailServiceImpl userDetailService) {
-        this.userDetailService = userDetailService;
-    }
-
+    private final UserDetailServiceImpl userDetailService;
     private final SuccessUserHandler successUserHandler;
 
-    public WebSecurityConfig(SuccessUserHandler successUserHandler) {
+
+    public WebSecurityConfig(UserDetailServiceImpl userDetailService,SuccessUserHandler successUserHandler) {
+        this.userDetailService = userDetailService;
         this.successUserHandler = successUserHandler;
     }
 
@@ -35,22 +33,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/","/hello").permitAll()
-                .antMatchers("/authenticated/**","/user").authenticated()
+                .antMatchers("/").permitAll()
+                .antMatchers("/user").hasRole("USER")
                 .antMatchers("/admin/**").hasRole("ADMIN")
-                //.antMatchers("/user").hasAnyRole("ADMIN","USER")
                 .and()
-                .formLogin()
+                .formLogin().successHandler(successUserHandler)
+                .permitAll()
                 .and()
-                .logout().logoutSuccessUrl("/")
+                .logout()
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/")
                 .permitAll();
     }
 
-    // аутентификация inMemory\
-    @Bean
-    public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
+    // аутентификация inMemory
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider(){
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
