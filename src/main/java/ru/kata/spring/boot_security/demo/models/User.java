@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import javax.transaction.Transactional;
 import java.util.Collection;
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Entity
@@ -23,22 +23,28 @@ public class User implements UserDetails {
     private int age;
     @Column(name = "password")
     private String password;
+    @Column(name = "first_name")
+    private String firstName;
+    @Column(name = "last_name")
+    private String lastName;
 
 
-    @ManyToMany(fetch = FetchType.EAGER)
+
+    @OneToMany(fetch= FetchType.LAZY)
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    @Column(name = "roles")
-    private Collection<Role> roles;
+    private List<Role> roles;
 
     public User() {
     }
-    public User(String username, int age, String password, Collection<Role> roles) {
+    public User(String username, int age, String password, List<Role> roles, String firstName, String lastName) {
         this.username = username;
         this.age = age;
         this.password = password;
         this.roles = roles;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
 
@@ -70,12 +76,29 @@ public class User implements UserDetails {
     public void setPassword(String password) {
         this.password = password;
     }
-    public Collection<Role> getRoles() {
+    public List<Role> getRoles() {
         return roles;
     }
-    public void setRoles(Collection<Role> roles) {
+    public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
     @Override
     @Transactional
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -110,5 +133,11 @@ public class User implements UserDetails {
                 ", age=" + age +
                 ", password='" + password + '\'' +
                 ", roles=" + roles;
+    }
+    public String getRoleOnly(){
+        roles = getRoles();
+        if(roles.toString().contains("ADMIN") && roles.toString().contains("USER")){return "ADMIN,USER";}
+        if(roles.toString().contains("ADMIN") && !(roles.toString().contains("USER"))){return "ADMIN";}
+        else {return "USER";}
     }
 }

@@ -1,38 +1,118 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Admin</title>
-  <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
+    <meta charset="UTF-8">
+    <title>Admin page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
-<h1>Admin, welcome to admins spring boot security page!</h1>
-<h1>List of users:</h1>
-<br/><br/>
-<div>
-  <table border = "1">
-    <tr>
-      <th>Id</th>
-      <th>Username</th>
-      <th>Password</th>
-      <th>Age</th>
-      <th>Roles</th>
-
-    </tr>
-    <tr th:each="user : ${users}">
-      <td th:utext="${user.id}">...</td>
-      <td th:utext="${user.username}">...</td>
-      <td th:utext="${user.password}">...</td>
-      <td th:utext="${user.age}">...</td>
-      <td th:utext="${user.roles}">...</td>
-
-      <td><a th:href="@{admin/edit/{id}(id=${user.id})}">Edit</a></td>
-      <td><a th:href="@{admin/delete/{id}(id=${user.id})}">Delete</a></td>
-    </tr>
-  </table>
-</div>
-<p><a href="/admin/create">Create user</a></p>
-<p><a href="/logout">Logout</a></p>
 <body>
+<div th:replace="~{edit::modal-edit}"></div>
+<div th:replace="~{delete::modal-delete}"></div>
+<nav class="navbar navbar navbar-expand-md navbar-dark bg-dark sticky-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a href="#" class="navbar-brand navbar-light "> <span class="fw-bold"><td th:utext="${admin.username}">...</td></span>
+                with roles:
+                <td th:utext="${admin.getRoleOnly()}">...</td>
+            </a>
+        </div>
+        <div>
+            <ul class="nav navbar-nav">
+                <li class="text-right"><a href="/logout" style="color: darkgray" class="text-decoration-none">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container-fluid">
+    <div class="row" style="height: 800px">
+        <div class="col-md-2" style="padding-left: 0px;padding-right: 0px; padding-top: 12px;">
+            <div class="d-grid gap-2">
+                <button type="button" class="btn btn-primary btn-block text-left" style="margin-top: 5px">Admin</button>
 
+                <a href="/admin/admin-user" class=" text-decoration-none text-center" style="margin-top: 5px;
+                 padding-left: 12px; padding-right: 200px; padding-bottom: 12px">User</a>
+            </div>
+        </div>
+        <div class="col-md-10" style="background:#f5f5f5">
+            <div class="container">
+                <h1> Admin panel</h1>
+                <nav>
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                        <button class="nav-link active" id="nav-home-tab" data-toggle="tab"
+                                data-target="#nav-home" type="button" role="tab" aria-controls="nav-home"
+                                aria-selected="true">Users table
+                        </button>
+                        <button class="nav-link" id="nav-profile-tab" data-toggle="tab" data-target="#nav-profile"
+                                type="button" role="tab" aria-controls="nav-profile" aria-selected="false">New User
+                        </button>
+                    </div>
+                </nav>
+                <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                        <div class="card">
+                            <div class="card-header"><b class="font-weight-bold">All users</b></div>
+                            <div class="card-body">
+                                <table th:fragment="admin-table" class="table table-striped">
+                                    <thead class="table-bordered">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>First name</th>
+                                        <th>Last name</th>
+                                        <th>Password</th>
+                                        <th>Age</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Edit</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                    </thead>
+                                    <tr th:each="user : ${users}">
+                                        <td th:utext="${user.id}">...</td>
+                                        <td th:utext="${user.firstName}">...</td>
+                                        <td th:utext="${user.lastName}">...</td>
+                                        <td th:utext="${user.password}">...</td>
+                                        <td th:utext="${user.age}">...</td>
+                                        <td th:utext="${user.username}">...</td>
+                                        <td th:utext="${user.getRoleOnly()}">...</td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                    data-target="#modalEdit" th:attr="data-id=${user.id},
+                                                    data-firstname=${user.firstName}, data-lastname=${user.lastName},
+									data-age=${user.age}, data-username=${user.username},data-password=${user.password}, data-roles=${user.roles}">
+                                                Edit
+                                            </button>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger" data-toggle="modal"
+                                                    data-target="#modalDelete" th:attr="data-id=${user.id},
+                                                    data-firstname=${user.firstName}, data-lastname=${user.lastName},
+									data-age=${user.age}, data-username=${user.username},data-password=${user.password}, data-roles=${user.roles}">
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+
+                        <div th:replace="~{newUser::newUser}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script type="text/javascript" src="/static/main.js/" th:src="@{/main.js}"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
 </body>
 </html>
