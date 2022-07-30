@@ -10,7 +10,7 @@
     <div class="card-body">
         <form th:method="POST" th:action="@{/admin/create/}" th:object="${user}">
             <div class="col-6 mx-auto">
-                <div class="form-group">
+                <div class="form-group" id="newUser">
 
                     <div class="form-group d-flex flex-column">
                         <label class="text-center font-weight-bold" for="editFirstName">First name</label>

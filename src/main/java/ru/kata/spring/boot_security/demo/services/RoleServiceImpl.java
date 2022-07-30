@@ -5,6 +5,8 @@ import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
 
 import javax.transaction.Transactional;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 public class RoleServiceImpl implements RoleService {
@@ -25,4 +27,9 @@ public class RoleServiceImpl implements RoleService {
         return roleRepository.findByName("ROLE_USER")
                 .orElseGet(() ->roleRepository.save(new Role("ROLE_USER")));
     }
+//    @Override
+//    @Transactional
+//    public Set<Role> findAll() {
+//        return new HashSet<>(roleRepository.findAll());
+//    }
 }
