@@ -40,14 +40,14 @@ public class AdminRestController {
                     : new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        @PostMapping("/admin")
+        @PutMapping("/admin")
         public ResponseEntity<User> addUser(@RequestBody User user) {
             userService.saveUser(user);
             return new ResponseEntity<>(user, HttpStatus.CREATED);
         }
 
-        @PatchMapping("/admin/{id}")
-        public ResponseEntity<User> updateUser(@RequestBody User user,@PathVariable Long id) {
+        @PatchMapping("/admin")
+        public ResponseEntity<User> updateUser(@RequestBody User user) {
             userService.saveUser(user);
             return new ResponseEntity<>(user, HttpStatus.OK);
         }
@@ -58,49 +58,5 @@ public class AdminRestController {
             return new ResponseEntity<>(HttpStatus.OK);
         }
 
-//        @GetMapping("/viewUser")
-//        public ResponseEntity<User> showUser(Authentication auth) {
-//            return new ResponseEntity<>((User) auth.getPrincipal(), HttpStatus.OK);
-//        }
-
-//        @GetMapping("/roles")
-//        public ResponseEntity<Set<Role>> getAllRoles() {
-//            return new ResponseEntity<>(roleService.findAll(), HttpStatus.OK);
-//        }
-
-
-//    @GetMapping("/admin/create")
-//    public String createUserForm(User user, Model model) {
-//        model.addAttribute("roleAdmin", roleService.getAdminRole());
-//        model.addAttribute("roleUser", roleService.getUserRole());
-//        return "newUser";
-//    }
-//
-//    @PostMapping("/admin/create")
-//    public String createUser(@ModelAttribute("user") User user) {
-//        userService.saveUser(user);
-//        return "redirect:/admin";
-//    }
-
-//    @DeleteMapping("admin/delete")
-//    public String deleteUser(@ModelAttribute("user") User user) {
-//        userService.deleteById(user.getId());
-//        return "redirect:/admin";
-//    }
-//
-//    @PatchMapping("admin/edit")
-//    public String editUser(@ModelAttribute("user") User user) {
-//        userService.saveUser(user);
-//        return "redirect:/admin";
-//    }
-//    @GetMapping("/")
-//    public String getLoginPage() {
-//        return "redirect:/login";
-//    }
-//
-//    @GetMapping("/login")
-//    public String getLoginPage2() {
-//        return "login";
-//    }
 
 }

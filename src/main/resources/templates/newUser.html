@@ -7,10 +7,10 @@
 <body>
 <div th:fragment="newUser" class="card">
     <div class="card-header"><b class="font-weight-bold">Add new user</b></div>
-    <div class="card-body">
-        <form th:method="POST" th:action="@{/admin/create/}" th:object="${user}">
+    <div class="card-body" id="newUser">
+        <form id="defaultSomeForm" data-hidden=true style="display: none">
             <div class="col-6 mx-auto">
-                <div class="form-group" id="newUser">
+                <div class="form-group">
 
                     <div class="form-group d-flex flex-column">
                         <label class="text-center font-weight-bold" for="editFirstName">First name</label>
@@ -40,11 +40,11 @@
                     <div class="d-flex flex-column">
                         <label class="text-center font-weight-bold" for="rolesSelector">Role</label>
                         <select class="custom-select" size="2" name="roles" id="rolesSelector" multiple required>
-                            <option th:text="ADMIN" th:value="${roleAdmin.getId()}" id="roleAdmin"></option>
-                            <option th:text="USER" th:value="${roleUser.getId()}" id="roleUser"></option>
+                            <option id="roleAdmin" value="1"  requared>ADMIN</option>
+                            <option id="roleUser" value="2"  requared>USER</option>
                         </select>
                         <div class="form-group mt-3">
-                            <input class="btn btn-success d-block mx-auto" type="submit" value="Add new user">
+                            <input class="btn btn-success d-block mx-auto" type="submit" id="addNewUserButton" value="Add new user">
                         </div>
                     </div>
                 </div>

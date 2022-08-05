@@ -46,7 +46,7 @@
                                 aria-selected="true">Users table
                         </button>
                         <button class="nav-link" id="nav-profile-tab" data-toggle="tab" data-target="#nav-profile"
-                                type="button" role="tab" aria-controls="nav-profile" aria-selected="false">New User
+                                type="button" role="tab" aria-controls="nav-profile" aria-selected="false" >New User
                         </button>
                     </div>
                 </nav>
@@ -55,7 +55,7 @@
                         <div class="card">
                             <div class="card-header"><b class="font-weight-bold">All users</b></div>
                             <div class="card-body">
-                                <table th:fragment="admin-table" class="table tableUser table-striped">
+                                <table th:fragment="admin-table" class="table table-striped" id="mainTableWithUsers">
                                     <thead class="table-bordered">
                                     <tr>
                                         <th>ID</th>
